@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>دعوة زفاف</title>
-    <!-- استيراد خط تجوال للتصميم الفاخر -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <title>دعوة زفاف فاخرة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           1. الإعدادات الأساسية (Global Styles)
+           1. الأساسيات ولوحة الألوان الفاتحة
         ========================================= */
+        :root {
+            --gold: #C5A059;
+            --light-gold: #D4AF37;
+            --cream: #FCF9F2;
+            --text-dark: #4A4A4A;
+            --white: #FFFFFF;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -19,17 +26,22 @@
         }
 
         body {
-            background-color: #0a0a0a;
-            color: #fff;
-            overflow: hidden; /* يمنع التمرير حتى يتم فتح الدعوة */
+            background-color: var(--cream);
+            color: var(--text-dark);
+            overflow: hidden;
+            scroll-behavior: smooth;
         }
 
         body.opened {
-            overflow-y: auto; /* السماح بالتمرير بعد الفتح */
+            overflow-y: auto;
+        }
+
+        h1, h2, .amiri {
+            font-family: 'Amiri', serif;
         }
 
         /* =========================================
-           2. شاشة الظرف الافتتاحية (Sliding Doors Overlay)
+           2. شاشة الظرف والجسيمات
         ========================================= */
         #envelope-overlay {
             position: fixed;
@@ -39,213 +51,254 @@
             height: 100vh;
             z-index: 9999;
             cursor: pointer;
-            /* يمنع النقر على الشاشة المغلقة بعد أن تفتح */
-            pointer-events: auto; 
+            overflow: hidden;
         }
 
-        #envelope-overlay.open {
+        /* حاوية الجسيمات (البتلات الذهبية) */
+        #particles-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1px;
+            height: 1px;
             pointer-events: none;
+            z-index: 10000;
         }
 
-        /* تنسيق أجزاء الصور لتأخذ الشاشة بالكامل من الجوانب */
         .env-part {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            /* حركة السحب الجانبية التدريجية والناعمة بدون اختفاء (بدون opacity) */
-            transition: transform 2s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
         .env-part img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* يضمن تمدد الصور لتغطية الشاشة بالكامل */
-            object-position: center;
-            display: block;
+            object-fit: cover;
         }
+
+        /* حركة الفتح الجانبية */
+        #envelope-overlay.open .top-part { transform: translateX(100vw); }
+        #envelope-overlay.open .bottom-part { transform: translateX(-100vw); }
+        #envelope-overlay.open { pointer-events: none; visibility: hidden; transition: visibility 0s 2.2s; }
 
         /* =========================================
-           3. حركات الانيميشن (Horizontal Sliding - Fixed)
-        ========================================= */
-        
-        /* الجزء الأسود (الذي يحتوي على الختم) مكانه الطبيعي في اليمين، 
-           لذلك سنسحبه نحو اليمين (موجب 100vw) 
-        */
-        #envelope-overlay.open .top-part {
-            transform: translateX(100vw);
-        }
-
-        /* الجزء الرمادي مكانه الطبيعي في اليسار، 
-           لذلك سنسحبه نحو اليسار (سالب 100vw) 
-        */
-        #envelope-overlay.open .bottom-part {
-            transform: translateX(-100vw);
-        }
-
-        /* =========================================
-           4. محتوى الموقع (Website Content)
+           3. محتوى الموقع (5 أقسام)
         ========================================= */
         .website-content {
-            /* يبدأ المحتوى بحجم أصغر وشفافية ليعطي تأثير الظهور من الداخل */
             opacity: 0;
-            transform: scale(0.75);
-            /* يتزامن الظهور تماماً مع وقت انزلاق الأبواب (2 ثانية) */
-            transition: opacity 1.8s ease 0.1s, transform 2s cubic-bezier(0.77, 0, 0.175, 1);
-            min-height: 100vh;
+            transform: scale(0.9);
+            transition: opacity 2s ease 0.3s, transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        /* عندما يتم فتح الظرف، يكتمل ظهور الموقع تدريجياً */
         body.opened .website-content {
             opacity: 1;
             transform: scale(1);
         }
 
-        /* قسم الهيرو (Hero Section) */
+        section {
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        /* Section 1: Hero */
         .hero {
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            /* خلفية الهيرو مع تأثير التعتيم */
-            background: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.8)), 
-                        url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
-            padding: 20px;
+            background: linear-gradient(rgba(252, 249, 242, 0.7), rgba(252, 249, 242, 0.7)), 
+                        url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1920&q=80') center/cover;
         }
 
         .hero h1 {
-            color: #D4AF37; /* لون ذهبي فاخر */
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 20px;
-            font-weight: 800;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            font-size: clamp(3rem, 8vw, 5rem);
+            color: var(--gold);
+            margin-bottom: 10px;
         }
 
         .hero p {
-            font-size: clamp(1.2rem, 2vw, 1.5rem);
-            color: #f0f0f0;
-            max-width: 600px;
-            line-height: 1.8;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            color: var(--text-dark);
         }
 
-        /* قسم التفاصيل تحت الهيرو */
-        .content-section {
-            padding: 80px 20px;
-            background-color: #0a0a0a;
-            text-align: center;
-        }
+        /* Section 2: Our Story */
+        .story { background-color: var(--white); }
+        .story h2 { font-size: 2.5rem; color: var(--gold); margin-bottom: 20px; }
+        .story p { max-width: 700px; margin: 0 auto; line-height: 2; font-size: 1.2rem; }
 
-        .details-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 15px;
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px);
-        }
-
-        .details-card h2 {
-            color: #D4AF37;
-            font-size: 2rem;
-            margin-bottom: 30px;
-        }
-
-        .details-grid {
+        /* Section 3: Gallery */
+        .gallery { background-color: var(--cream); }
+        .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 15px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+        .grid img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 4px solid var(--white);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
 
-        .detail-item h3 {
-            color: #fff;
-            margin-bottom: 10px;
-            font-size: 1.3rem;
+        /* Section 4: Venue & Time */
+        .details { background-color: var(--white); }
+        .details-box {
+            border: 2px solid var(--gold);
+            padding: 50px;
+            display: inline-block;
+            border-radius: 100px 100px 0 0;
+            background: var(--cream);
         }
 
-        .detail-item p {
-            color: #aaa;
-            line-height: 1.6;
-        }
-
+        /* Section 5: RSVP / Gift */
+        .rsvp { background-color: var(--gold); color: white; }
+        .rsvp h2 { color: white; }
         .rsvp-btn {
-            background-color: #D4AF37;
-            color: #000;
-            padding: 15px 40px;
+            background: white;
+            color: var(--gold);
+            padding: 15px 50px;
             border: none;
-            border-radius: 30px;
+            border-radius: 50px;
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+            margin-top: 30px;
+            transition: 0.3s;
+        }
+        .rsvp-btn:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+
+        /* انيميشن البتلات */
+        .particle {
+            position: absolute;
+            background-color: var(--light-gold);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: 0.8;
         }
 
-        .rsvp-btn:hover {
-            background-color: #b5952f;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-        }
     </style>
 </head>
 <body>
 
-    <!-- الغلاف (Envelope Overlay) -->
+    <!-- مؤثرات صوتية (صوت سحب ناعم) -->
+    <audio id="open-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- شاشة الظرف والجسيمات -->
     <div id="envelope-overlay">
-        <!-- الجزء السفلي الرمادي (ينسحب لليسار) -->
+        <div id="particles-container"></div>
+        
         <div class="env-part bottom-part">
-            <img src="https://raw.githubusercontent.com/alnazeerabdo/weedding/main/gray.png" alt="Bottom Part (Left)">
+            <img src="https://raw.githubusercontent.com/alnazeerabdo/weedding/main/gray.png" alt="Bottom Part">
         </div>
         
-        <!-- الجزء العلوي الأسود (ينسحب لليمين) -->
         <div class="env-part top-part">
-            <img src="https://raw.githubusercontent.com/alnazeerabdo/weedding/main/blak.png" alt="Top Part (Right)">
+            <img src="https://raw.githubusercontent.com/alnazeerabdo/weedding/main/blak.png" alt="Top Part">
         </div>
     </div>
 
-    <!-- محتوى الموقع الأساسي (Website Content) -->
+    <!-- محتوى الموقع -->
     <div class="website-content">
         
+        <!-- 1. Hero Section -->
         <section class="hero">
-            <h1>أفراحنا</h1>
-            <p>بكل الحب والود، نتشرف بدعوتكم لمشاركتنا فرحة العمر وحضور حفل زفافنا، لتكتمل سعادتنا بوجودكم.</p>
+            <p>بـسـم الله الرحـمـن الرحـيـم</p>
+            <h1>أحمد & سارة</h1>
+            <p>نحتفل بحبنا .. وننتظر حضوركم</p>
         </section>
 
-        <section class="content-section">
-            <div class="details-card">
-                <h2>تفاصيل الحفل</h2>
-                
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <h3>الزمان</h3>
-                        <p>يوم الخميس الموافق<br>25 مايو 2026<br>الساعة 8:00 مساءً</p>
-                    </div>
-                    <div class="detail-item">
-                        <h3>المكان</h3>
-                        <p>قاعة الاحتفالات الكبرى<br>فندق الريتز كارلتون<br>المملكة العربية السعودية</p>
-                    </div>
-                </div>
+        <!-- 2. Our Story Section -->
+        <section class="story">
+            <h2>حكايتنا</h2>
+            <p>
+                بدأت رحلتنا بكلمة، واليوم نستكملها بعهد أبدي أمام الله وبحضوركم الكريم.
+                نسعد بمشاركتكم لنا هذه اللحظات التي طالما انتظرناها لتكون بداية لحياة مليئة بالسعادة والمودة.
+            </p>
+        </section>
 
-                <button class="rsvp-btn">تأكيد الحضور</button>
+        <!-- 3. Gallery Section -->
+        <section class="gallery">
+            <h2>لحظاتنا الجميلة</h2>
+            <div class="grid">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=500&q=80" alt="Wedding 1">
+                <img src="https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&w=500&q=80" alt="Wedding 2">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=500&q=80" alt="Wedding 3">
             </div>
+        </section>
+
+        <!-- 4. Details Section -->
+        <section class="details">
+            <div class="details-box">
+                <h2>موعدنا المنتظر</h2>
+                <p style="font-size: 1.4rem; margin-top: 20px;">الخميس، 20 أغسطس 2026</p>
+                <p>الساعة الثامنة مساءً</p>
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--gold); opacity: 0.3;">
+                <h3>المكان</h3>
+                <p>فندق الفورسيزونز - قاعة الثريا</p>
+            </div>
+        </section>
+
+        <!-- 5. RSVP Section -->
+        <section class="rsvp">
+            <h2>هل ستشاركوننا الفرحة؟</h2>
+            <p>نرجو تأكيد حضوركم قبل موعد الحفل بـ 10 أيام</p>
+            <button class="rsvp-btn">تأكيد الحضور الآن</button>
+            <p style="margin-top: 50px; font-size: 0.9rem; opacity: 0.8;">بوجودكم تكتمل فرحتنا</p>
         </section>
 
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const envelopeOverlay = document.getElementById('envelope-overlay');
+            const overlay = document.getElementById('envelope-overlay');
             const body = document.body;
+            const sound = document.getElementById('open-sound');
+            const particlesContainer = document.getElementById('particles-container');
 
-            envelopeOverlay.addEventListener('click', () => {
-                // تفعيل الحركة للخارج (كل صورة إلى جانبها)
-                envelopeOverlay.classList.add('open');
+            function createParticles() {
+                for (let i = 0; i < 40; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    particlesContainer.appendChild(p);
+
+                    // انيميشن عشوائي لكل بتلة
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = 2 + Math.random() * 5;
+                    const tx = Math.cos(angle) * 200 + (Math.random() - 0.5) * 100;
+                    const ty = Math.sin(angle) * 200 + (Math.random() - 0.5) * 100;
+
+                    p.animate([
+                        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+                        { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                    ], {
+                        duration: 1000 + Math.random() * 1000,
+                        easing: 'cubic-bezier(0, .9, .57, 1)',
+                        fill: 'forwards'
+                    });
+                }
+            }
+
+            overlay.addEventListener('click', () => {
+                // تشغيل الصوت
+                sound.play().catch(e => console.log("Sound blocked by browser"));
                 
-                // ظهور محتوى الموقع
+                // تشغيل الجسيمات
+                createParticles();
+
+                // فتح الظرف
+                overlay.classList.add('open');
                 body.classList.add('opened');
             });
         });
