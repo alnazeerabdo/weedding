@@ -52,9 +52,9 @@
             z-index: 9999;
             cursor: pointer;
             overflow: hidden;
+            background-color: var(--cream);
         }
 
-        /* حاوية الجسيمات (البتلات الذهبية) */
         #particles-container {
             position: absolute;
             top: 50%;
@@ -74,16 +74,41 @@
             transition: transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
+        /* تعديل الجزء الأسود لضمان تداخل أعمق يغلق الفراغ تماماً */
+        .top-part {
+            z-index: 10;
+            /* تم تعديل الإزاحة لـ 16px لضمان إغلاق الفجوة تماماً */
+            transform: translateY(16px);
+        }
+
+        .bottom-part {
+            z-index: 5;
+        }
+
         .env-part img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+            /* زيادة طول الصورة لضمان التداخل ومنع الفراغات */
+            transform: scaleY(1.05);
         }
 
         /* حركة الفتح الجانبية */
-        #envelope-overlay.open .top-part { transform: translateX(100vw); }
-        #envelope-overlay.open .bottom-part { transform: translateX(-100vw); }
-        #envelope-overlay.open { pointer-events: none; visibility: hidden; transition: visibility 0s 2.2s; }
+        #envelope-overlay.open .top-part { 
+            /* المحافظة على الإزاحة الرأسية (16px) أثناء التحرك لمنع الوميض */
+            transform: translateX(100vw) translateY(16px); 
+        }
+        #envelope-overlay.open .bottom-part { 
+            transform: translateX(-100vw); 
+        }
+        
+        #envelope-overlay.open { 
+            pointer-events: none; 
+            visibility: hidden; 
+            transition: visibility 0s 2.2s, background-color 0.5s ease 0.5s; 
+            background-color: transparent;
+        }
 
         /* =========================================
            3. محتوى الموقع (5 أقسام)
@@ -104,7 +129,6 @@
             text-align: center;
         }
 
-        /* Section 1: Hero */
         .hero {
             height: 100vh;
             display: flex;
@@ -127,12 +151,10 @@
             color: var(--text-dark);
         }
 
-        /* Section 2: Our Story */
         .story { background-color: var(--white); }
         .story h2 { font-size: 2.5rem; color: var(--gold); margin-bottom: 20px; }
         .story p { max-width: 700px; margin: 0 auto; line-height: 2; font-size: 1.2rem; }
 
-        /* Section 3: Gallery */
         .gallery { background-color: var(--cream); }
         .grid {
             display: grid;
@@ -148,9 +170,9 @@
             border-radius: 8px;
             border: 4px solid var(--white);
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: none; 
         }
 
-        /* Section 4: Venue & Time */
         .details { background-color: var(--white); }
         .details-box {
             border: 2px solid var(--gold);
@@ -160,7 +182,6 @@
             background: var(--cream);
         }
 
-        /* Section 5: RSVP / Gift */
         .rsvp { background-color: var(--gold); color: white; }
         .rsvp h2 { color: white; }
         .rsvp-btn {
@@ -177,7 +198,6 @@
         }
         .rsvp-btn:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
 
-        /* انيميشن البتلات */
         .particle {
             position: absolute;
             background-color: var(--light-gold);
@@ -191,12 +211,10 @@
 </head>
 <body>
 
-    <!-- مؤثرات صوتية (صوت سحب ناعم) -->
     <audio id="open-sound" preload="auto">
         <source src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- شاشة الظرف والجسيمات -->
     <div id="envelope-overlay">
         <div id="particles-container"></div>
         
@@ -209,17 +227,14 @@
         </div>
     </div>
 
-    <!-- محتوى الموقع -->
     <div class="website-content">
         
-        <!-- 1. Hero Section -->
         <section class="hero">
             <p>بـسـم الله الرحـمـن الرحـيـم</p>
             <h1>أحمد & سارة</h1>
             <p>نحتفل بحبنا .. وننتظر حضوركم</p>
         </section>
 
-        <!-- 2. Our Story Section -->
         <section class="story">
             <h2>حكايتنا</h2>
             <p>
@@ -228,7 +243,6 @@
             </p>
         </section>
 
-        <!-- 3. Gallery Section -->
         <section class="gallery">
             <h2>لحظاتنا الجميلة</h2>
             <div class="grid">
@@ -238,7 +252,6 @@
             </div>
         </section>
 
-        <!-- 4. Details Section -->
         <section class="details">
             <div class="details-box">
                 <h2>موعدنا المنتظر</h2>
@@ -250,7 +263,6 @@
             </div>
         </section>
 
-        <!-- 5. RSVP Section -->
         <section class="rsvp">
             <h2>هل ستشاركوننا الفرحة؟</h2>
             <p>نرجو تأكيد حضوركم قبل موعد الحفل بـ 10 أيام</p>
@@ -273,7 +285,6 @@
                     p.className = 'particle';
                     particlesContainer.appendChild(p);
 
-                    // انيميشن عشوائي لكل بتلة
                     const angle = Math.random() * Math.PI * 2;
                     const velocity = 2 + Math.random() * 5;
                     const tx = Math.cos(angle) * 200 + (Math.random() - 0.5) * 100;
@@ -291,13 +302,8 @@
             }
 
             overlay.addEventListener('click', () => {
-                // تشغيل الصوت
                 sound.play().catch(e => console.log("Sound blocked by browser"));
-                
-                // تشغيل الجسيمات
                 createParticles();
-
-                // فتح الظرف
                 overlay.classList.add('open');
                 body.classList.add('opened');
             });
