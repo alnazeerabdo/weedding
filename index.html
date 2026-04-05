@@ -1,1 +1,254 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دعوة زفاف</title>
+    <!-- استيراد خط تجوال للتصميم الفاخر -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. الإعدادات الأساسية (Global Styles)
+        ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
 
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            overflow: hidden; /* يمنع التمرير حتى يتم فتح الدعوة */
+        }
+
+        body.opened {
+            overflow-y: auto; /* السماح بالتمرير بعد الفتح */
+        }
+
+        /* =========================================
+           2. شاشة الظرف الافتتاحية (Sliding Doors Overlay)
+        ========================================= */
+        #envelope-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            cursor: pointer;
+            /* يمنع النقر على الشاشة المغلقة بعد أن تفتح */
+            pointer-events: auto; 
+        }
+
+        #envelope-overlay.open {
+            pointer-events: none;
+        }
+
+        /* تنسيق أجزاء الصور لتأخذ الشاشة بالكامل من الجوانب */
+        .env-part {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* حركة السحب الجانبية التدريجية والناعمة بدون اختفاء (بدون opacity) */
+            transition: transform 2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .env-part img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* يضمن تمدد الصور لتغطية الشاشة بالكامل */
+            object-position: center;
+            display: block;
+        }
+
+        /* =========================================
+           3. حركات الانيميشن (Horizontal Sliding - Fixed)
+        ========================================= */
+        
+        /* الجزء الأسود (الذي يحتوي على الختم) مكانه الطبيعي في اليمين، 
+           لذلك سنسحبه نحو اليمين (موجب 100vw) 
+        */
+        #envelope-overlay.open .top-part {
+            transform: translateX(100vw);
+        }
+
+        /* الجزء الرمادي مكانه الطبيعي في اليسار، 
+           لذلك سنسحبه نحو اليسار (سالب 100vw) 
+        */
+        #envelope-overlay.open .bottom-part {
+            transform: translateX(-100vw);
+        }
+
+        /* =========================================
+           4. محتوى الموقع (Website Content)
+        ========================================= */
+        .website-content {
+            /* يبدأ المحتوى بحجم أصغر وشفافية ليعطي تأثير الظهور من الداخل */
+            opacity: 0;
+            transform: scale(0.75);
+            /* يتزامن الظهور تماماً مع وقت انزلاق الأبواب (2 ثانية) */
+            transition: opacity 1.8s ease 0.1s, transform 2s cubic-bezier(0.77, 0, 0.175, 1);
+            min-height: 100vh;
+        }
+
+        /* عندما يتم فتح الظرف، يكتمل ظهور الموقع تدريجياً */
+        body.opened .website-content {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* قسم الهيرو (Hero Section) */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            /* خلفية الهيرو مع تأثير التعتيم */
+            background: linear-gradient(rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.8)), 
+                        url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            padding: 20px;
+        }
+
+        .hero h1 {
+            color: #D4AF37; /* لون ذهبي فاخر */
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            color: #f0f0f0;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+
+        /* قسم التفاصيل تحت الهيرو */
+        .content-section {
+            padding: 80px 20px;
+            background-color: #0a0a0a;
+            text-align: center;
+        }
+
+        .details-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .details-card h2 {
+            color: #D4AF37;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .detail-item h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .detail-item p {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .rsvp-btn {
+            background-color: #D4AF37;
+            color: #000;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .rsvp-btn:hover {
+            background-color: #b5952f;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- الغلاف (Envelope Overlay) -->
+    <div id="envelope-overlay">
+        <!-- الجزء السفلي الرمادي (ينسحب لليسار) -->
+        <div class="env-part bottom-part">
+            <img src="https://raw.githubusercontent.com/alnazeerabdo/weedding/main/gray.png" alt="Bottom Part (Left)">
+        </div>
+        
+        <!-- الجزء العلوي الأسود (ينسحب لليمين) -->
+        <div class="env-part top-part">
+            <img src="https://raw.githubusercontent.com/alnazeerabdo/weedding/main/blak.png" alt="Top Part (Right)">
+        </div>
+    </div>
+
+    <!-- محتوى الموقع الأساسي (Website Content) -->
+    <div class="website-content">
+        
+        <section class="hero">
+            <h1>أفراحنا</h1>
+            <p>بكل الحب والود، نتشرف بدعوتكم لمشاركتنا فرحة العمر وحضور حفل زفافنا، لتكتمل سعادتنا بوجودكم.</p>
+        </section>
+
+        <section class="content-section">
+            <div class="details-card">
+                <h2>تفاصيل الحفل</h2>
+                
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <h3>الزمان</h3>
+                        <p>يوم الخميس الموافق<br>25 مايو 2026<br>الساعة 8:00 مساءً</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>المكان</h3>
+                        <p>قاعة الاحتفالات الكبرى<br>فندق الريتز كارلتون<br>المملكة العربية السعودية</p>
+                    </div>
+                </div>
+
+                <button class="rsvp-btn">تأكيد الحضور</button>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const envelopeOverlay = document.getElementById('envelope-overlay');
+            const body = document.body;
+
+            envelopeOverlay.addEventListener('click', () => {
+                // تفعيل الحركة للخارج (كل صورة إلى جانبها)
+                envelopeOverlay.classList.add('open');
+                
+                // ظهور محتوى الموقع
+                body.classList.add('opened');
+            });
+        });
+    </script>
+</body>
+</html>
