@@ -74,15 +74,17 @@
             transition: transform 2.2s cubic-bezier(0.77, 0, 0.175, 1);
         }
 
-        /* تعديل الجزء الأسود لضمان تداخل أعمق يغلق الفراغ تماماً */
+        /* الجزء الأسود (العلوي) */
         .top-part {
             z-index: 10;
-            /* تم تعديل الإزاحة لـ 16px لضمان إغلاق الفجوة تماماً */
+            /* يحافظ على الإزاحة السابقة لضمان التغطية */
             transform: translateY(16px);
         }
 
+        /* الجزء الرمادي (السفلي) - تم رفعه بمقدار 15px */
         .bottom-part {
             z-index: 5;
+            transform: translateY(-15px);
         }
 
         .env-part img {
@@ -90,17 +92,16 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            /* زيادة طول الصورة لضمان التداخل ومنع الفراغات */
             transform: scaleY(1.05);
         }
 
         /* حركة الفتح الجانبية */
         #envelope-overlay.open .top-part { 
-            /* المحافظة على الإزاحة الرأسية (16px) أثناء التحرك لمنع الوميض */
             transform: translateX(100vw) translateY(16px); 
         }
         #envelope-overlay.open .bottom-part { 
-            transform: translateX(-100vw); 
+            /* يحافظ على الرفع أثناء الانزلاق لليسار */
+            transform: translateX(-100vw) translateY(-15px); 
         }
         
         #envelope-overlay.open { 
