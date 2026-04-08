@@ -15,228 +15,314 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Tajawal',sans-serif}
         body{background:var(--cream);color:var(--text);overflow:hidden;scroll-behavior:smooth}
         body.opened{overflow-y:auto}
-        h1,h2,.amiri{font-family:'Aref Ruqaa','Amiri',serif}
+        h1,h2,h3,.amiri{font-family:'Aref Ruqaa','Amiri',serif}
 
-        /* ENVELOPE */
-        #envelope-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;cursor:pointer;overflow:hidden;background:var(--cream);display:flex;align-items:center;justify-content:center}
-        .tap-hint{position:absolute;bottom:15%;color:var(--gold);font-size:1.2rem;animation:pulse 2s infinite;z-index:11;text-shadow:0 2px 8px rgba(0,0,0,.1)}
-        @keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
-        #particles-container{position:absolute;top:50%;left:50%;width:1px;height:1px;pointer-events:none;z-index:10000}
-        .env-part{position:absolute;top:0;left:0;width:100vw;height:100vh;transition:transform 2.2s cubic-bezier(.77,0,.175,1)}
+        /* ===== ENVELOPE ===== */
+        #envelope-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;cursor:pointer;overflow:hidden;background:var(--cream)}
+        .env-part{position:absolute;top:0;left:0;width:100vw;height:100vh;transition:transform 1.8s cubic-bezier(.77,0,.175,1),opacity 1s ease 1.2s}
         .top-part{z-index:10;transform:translateY(16px)}
         .bottom-part{z-index:5;transform:translateY(-15px)}
         .env-part img{width:100%;height:100%;object-fit:cover;display:block;transform:scaleY(1.05)}
-        #envelope-overlay.open .top-part{transform:translateX(100vw) translateY(16px)}
-        #envelope-overlay.open .bottom-part{transform:translateX(-100vw) translateY(-15px)}
-        #envelope-overlay.open{pointer-events:none;visibility:hidden;transition:visibility 0s 2.2s,background-color .5s ease .5s;background:transparent}
-        .particle{position:absolute;border-radius:50%;opacity:.8}
 
-        /* CONTENT */
-        .website-content{opacity:0;transform:scale(.92);transition:opacity 2s ease .3s,transform 2.2s cubic-bezier(.77,0,.175,1)}
+        /* Envelope glow pulse */
+        .env-glow{position:absolute;top:50%;left:50%;width:300px;height:300px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.25),transparent 70%);z-index:11;animation:envGlow 2.5s ease-in-out infinite;pointer-events:none}
+        @keyframes envGlow{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.4);opacity:1}}
+
+        .tap-hint{position:absolute;bottom:12%;left:50%;transform:translateX(-50%);color:var(--gold);font-size:1.3rem;z-index:12;text-align:center;animation:tapPulse 2s ease infinite}
+        .tap-arrow{display:block;font-size:2rem;animation:tapBounce 1.5s ease infinite}
+        @keyframes tapPulse{0%,100%{opacity:.3}50%{opacity:1}}
+        @keyframes tapBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+        /* OPEN STATES */
+        #envelope-overlay.open .top-part{transform:translateX(100vw) translateY(16px) rotate(8deg);opacity:0}
+        #envelope-overlay.open .bottom-part{transform:translateX(-100vw) translateY(-15px) rotate(-8deg);opacity:0}
+        #envelope-overlay.open .env-glow{animation:envBurst .8s ease forwards}
+        @keyframes envBurst{to{transform:translate(-50%,-50%) scale(5);opacity:0}}
+        #envelope-overlay.open{pointer-events:none;transition:visibility 0s 2s;visibility:hidden}
+        #envelope-overlay.open .tap-hint{opacity:0;transition:opacity .3s}
+
+        /* Golden confetti */
+        .confetti{position:fixed;top:-20px;width:10px;height:16px;z-index:10001;pointer-events:none;opacity:0}
+        @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+        /* ===== SCREEN FLASH ===== */
+        .screen-flash{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(212,175,55,.3);z-index:9998;pointer-events:none;opacity:0}
+        .screen-flash.active{animation:flash .8s ease}
+        @keyframes flash{0%{opacity:1}100%{opacity:0}}
+
+        /* ===== CONTENT ===== */
+        .website-content{opacity:0;transform:scale(.92);transition:opacity 1.5s ease .5s,transform 2s cubic-bezier(.77,0,.175,1) .3s}
         body.opened .website-content{opacity:1;transform:scale(1)}
 
-        /* FLOATING PARTICLES BG */
-        .bg-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
-        .bg-particle{position:absolute;width:6px;height:6px;background:var(--gold-light);border-radius:50%;opacity:.15;animation:floatUp linear infinite}
-        @keyframes floatUp{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:.2}90%{opacity:.2}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
+        /* BG sparkles */
+        .sparkle{position:fixed;width:4px;height:4px;background:var(--gold-light);border-radius:50%;pointer-events:none;z-index:0;opacity:0;animation:sparkle linear infinite}
+        @keyframes sparkle{0%{opacity:0;transform:translateY(100vh) scale(0)}20%{opacity:.3;transform:translateY(80vh) scale(1)}80%{opacity:.3;transform:translateY(10vh) scale(1)}100%{opacity:0;transform:translateY(-5vh) scale(0)}}
 
-        /* SECTIONS */
         section{padding:100px 20px;text-align:center;position:relative;z-index:1}
 
-        /* HERO */
-        .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,rgba(252,249,242,.92),rgba(245,238,217,.88)),radial-gradient(ellipse at center,rgba(197,160,89,.15) 0%,transparent 70%);position:relative;overflow:hidden}
-        .hero-mandala{position:absolute;width:600px;height:600px;border:1px solid rgba(197,160,89,.1);border-radius:50%;animation:rotateSlow 60s linear infinite}
-        .hero-mandala:nth-child(2){width:500px;height:500px;animation-direction:reverse;animation-duration:45s;border-style:dashed}
-        .hero-mandala:nth-child(3){width:400px;height:400px;animation-duration:30s;border-color:rgba(197,160,89,.15)}
+        /* ===== HERO ===== */
+        .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(ellipse at center,rgba(252,249,242,1) 0%,rgba(245,238,217,.9) 100%);position:relative;overflow:hidden}
+
+        /* Hero orbiting cake */
+        .hero-orbit{position:absolute;width:650px;height:650px;top:50%;left:50%;transform:translate(-50%,-50%)}
+        .hero-orbit-ring{position:absolute;width:100%;height:100%;border:1px dashed rgba(197,160,89,.2);border-radius:50%;animation:heroSpin 30s linear infinite}
+        .hero-orbit-ring:nth-child(2){width:80%;height:80%;top:10%;left:10%;animation-duration:22s;animation-direction:reverse;border-style:dotted}
+        .hero-orbit-ring:nth-child(3){width:60%;height:60%;top:20%;left:20%;animation-duration:18s;border-color:rgba(197,160,89,.15)}
+        @keyframes heroSpin{to{transform:rotate(360deg)}}
+
+        .hero-float-item{position:absolute;width:90px;height:90px;border-radius:50%;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.12);border:3px solid var(--gold);background:var(--white);animation:heroFloat 6s ease-in-out infinite}
+        .hero-float-item img{width:100%;height:100%;object-fit:cover}
+        .hero-float-item:nth-child(1){top:-45px;left:50%;margin-left:-45px}
+        .hero-float-item:nth-child(2){bottom:-45px;left:50%;margin-left:-45px;animation-delay:-1.5s}
+        .hero-float-item:nth-child(3){top:50%;left:-45px;margin-top:-45px;animation-delay:-3s}
+        .hero-float-item:nth-child(4){top:50%;right:-45px;margin-top:-45px;animation-delay:-4.5s}
+        @keyframes heroFloat{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.1) translateY(-8px)}}
+
+        .hero-cake-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;overflow:hidden;box-shadow:0 0 80px rgba(197,160,89,.35),0 0 160px rgba(197,160,89,.1);border:4px solid var(--gold);z-index:2}
+        .hero-cake-center img{width:100%;height:100%;object-fit:cover}
+
+        .hero-text{position:relative;z-index:3}
+        .hero .bismillah{font-size:1.6rem;color:var(--gold);margin-bottom:15px;opacity:0}
+        .hero h1{font-size:clamp(3.5rem,10vw,6.5rem);color:var(--gold);margin:5px 0;opacity:0;text-shadow:0 4px 25px rgba(197,160,89,.3)}
+        .hero .invite-line{font-size:clamp(1.2rem,3vw,1.8rem);color:var(--burgundy);opacity:0;display:block;margin:5px 0}
+        .hero .subtitle{font-size:1.3rem;letter-spacing:3px;color:var(--text);opacity:0}
+        .hero .scroll-arrow{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:1.8rem;opacity:0}
+
+        /* Hero timeline animations */
+        body.opened .hero .bismillah{animation:heroReveal 1s ease forwards;animation-delay:1s}
+        body.opened .hero .invite-line{animation:heroReveal 1s ease forwards;animation-delay:1.4s}
+        body.opened .hero h1{animation:heroRevealBig 1.2s ease forwards;animation-delay:1.8s}
+        body.opened .hero .subtitle{animation:heroReveal 1s ease forwards;animation-delay:2.4s}
+        body.opened .hero .scroll-arrow{animation:heroReveal 1s ease forwards,bounce 2s ease infinite;animation-delay:3s,3s}
+        @keyframes heroReveal{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes heroRevealBig{0%{opacity:0;transform:translateY(40px) scale(.7)}60%{transform:translateY(-5px) scale(1.05)}100%{opacity:1;transform:translateY(0) scale(1)}}
+        @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-12px)}}
+
+        /* Ornament divider */
+        .ornament{text-align:center;padding:15px 0;font-size:2rem;color:var(--gold);opacity:.4;letter-spacing:15px}
+
+        /* ===== STORY ===== */
+        .story{background:var(--white);overflow:hidden;position:relative}
+        .story-bg-star{position:absolute;font-size:250px;color:var(--gold);opacity:.03;font-family:'Aref Ruqaa',serif;animation:rotateSlow 50s linear infinite}
+        .story-bg-star:nth-child(1){top:-80px;right:-80px}
+        .story-bg-star:nth-child(2){bottom:-80px;left:-80px;animation-direction:reverse}
         @keyframes rotateSlow{to{transform:rotate(360deg)}}
-        .hero .bismillah{font-size:1.6rem;color:var(--gold);margin-bottom:20px;opacity:0;animation:fadeSlideUp 1s ease forwards;animation-delay:2.8s}
-        .hero h1{font-size:clamp(3rem,9vw,6rem);color:var(--gold);margin:10px 0;opacity:0;animation:fadeSlideUp 1s ease forwards;animation-delay:3.2s;text-shadow:0 4px 20px rgba(197,160,89,.3)}
-        .hero .ampersand{font-size:clamp(2rem,5vw,3.5rem);color:var(--burgundy);opacity:0;animation:fadeSlideUp 1s ease forwards;animation-delay:3s;display:block;margin:5px 0}
-        .hero .subtitle{font-size:1.4rem;letter-spacing:3px;color:var(--text);opacity:0;animation:fadeSlideUp 1s ease forwards;animation-delay:3.5s}
-        .hero .scroll-indicator{position:absolute;bottom:40px;opacity:0;animation:fadeSlideUp 1s ease forwards,bounce 2s ease infinite;animation-delay:4s,4s;color:var(--gold);font-size:1.5rem}
-        @keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-
-        /* ORNAMENT DIVIDER */
-        .ornament{text-align:center;padding:20px 0;font-size:2.5rem;color:var(--gold);opacity:.6;letter-spacing:10px}
-
-        /* STORY */
-        .story{background:var(--white);position:relative;overflow:hidden}
-        .story::before,.story::after{content:'✦';position:absolute;font-size:200px;color:var(--gold);opacity:.03;font-family:'Aref Ruqaa',serif}
-        .story::before{top:-50px;right:-50px;animation:rotateSlow 40s linear infinite}
-        .story::after{bottom:-50px;left:-50px;animation:rotateSlow 40s linear infinite reverse}
         .story h2{font-size:2.8rem;color:var(--gold);margin-bottom:30px}
-        .story p{max-width:700px;margin:0 auto;line-height:2.2;font-size:1.2rem;color:#555}
+        .story p{max-width:700px;margin:0 auto;line-height:2.4;font-size:1.2rem;color:#555}
 
-        /* CIRCLING ITEMS */
-        .circle-showcase{padding:80px 20px;background:linear-gradient(to bottom,var(--cream),var(--white));position:relative;overflow:hidden}
+        /* ===== TIMELINE ===== */
+        .timeline-section{background:linear-gradient(135deg,var(--cream),var(--white));padding:80px 20px;overflow:hidden}
+        .timeline-section h2{font-size:2.8rem;color:var(--gold);margin-bottom:60px}
+        .timeline{position:relative;max-width:600px;margin:0 auto}
+        .timeline::before{content:'';position:absolute;right:50%;width:3px;height:100%;background:linear-gradient(to bottom,transparent,var(--gold),transparent);transform:translateX(50%)}
+        .tl-item{position:relative;padding:20px 0;display:flex;align-items:center}
+        .tl-item:nth-child(odd){flex-direction:row-reverse;text-align:left}
+        .tl-item:nth-child(even){text-align:right}
+        .tl-dot{width:20px;height:20px;background:var(--gold);border-radius:50%;position:absolute;right:50%;transform:translateX(50%);z-index:2;box-shadow:0 0 20px rgba(197,160,89,.4)}
+        .tl-content{width:42%;padding:20px;background:var(--white);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.05);border:1px solid rgba(197,160,89,.15)}
+        .tl-content h3{color:var(--gold);margin-bottom:8px;font-size:1.3rem}
+        .tl-content p{font-size:.95rem;color:#666;line-height:1.8}
+        .tl-icon{font-size:2rem;margin-bottom:8px}
+
+        /* ===== CIRCLE SHOWCASE ===== */
+        .circle-showcase{padding:80px 20px;background:var(--white);overflow:hidden}
         .circle-showcase h2{font-size:2.8rem;color:var(--gold);margin-bottom:60px}
-        .orbit-container{position:relative;width:350px;height:350px;margin:0 auto}
-        .orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:140px;height:140px;background:radial-gradient(circle,var(--gold-light),var(--gold-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 60px rgba(197,160,89,.4),0 0 120px rgba(197,160,89,.15);z-index:2}
-        .orbit-center span{color:var(--white);font-family:'Aref Ruqaa',serif;font-size:1.2rem;text-align:center;line-height:1.4}
-        .orbit-ring{position:absolute;top:0;left:0;width:100%;height:100%;animation:orbitSpin 20s linear infinite;z-index:1}
-        .orbit-ring:nth-child(3){animation-duration:25s;animation-direction:reverse}
-        @keyframes orbitSpin{to{transform:rotate(360deg)}}
-        .orbit-item{position:absolute;width:80px;height:80px;border-radius:50%;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.15);border:3px solid var(--gold);background:var(--white)}
-        .orbit-item img{width:100%;height:100%;object-fit:cover}
-        .orbit-item:nth-child(1){top:-40px;left:50%;transform:translateX(-50%)}
-        .orbit-item:nth-child(2){bottom:-40px;left:50%;transform:translateX(-50%)}
-        .orbit-item:nth-child(3){top:50%;left:-40px;transform:translateY(-50%)}
-        .orbit-item:nth-child(4){top:50%;right:-40px;transform:translateY(-50%)}
+        .items-row{display:flex;gap:25px;justify-content:center;flex-wrap:wrap;max-width:1000px;margin:0 auto}
+        .item-card{width:220px;background:var(--cream);border-radius:24px;padding:18px;box-shadow:0 10px 40px rgba(0,0,0,.04);border:1px solid rgba(197,160,89,.15);transition:transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .5s;cursor:default;position:relative;overflow:hidden}
+        .item-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .6s}
+        .item-card:hover::before{left:100%}
+        .item-card:hover{transform:translateY(-12px) scale(1.04);box-shadow:0 25px 60px rgba(197,160,89,.2)}
+        .item-card img{width:100%;height:180px;object-fit:cover;border-radius:16px}
+        .item-card p{margin-top:14px;font-weight:700;color:var(--gold);font-size:1.1rem}
 
-        /* ITEMS CAROUSEL */
-        .items-carousel{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin-top:60px;max-width:900px;margin-left:auto;margin-right:auto}
-        .carousel-card{width:200px;background:var(--white);border-radius:20px;padding:15px;box-shadow:0 10px 40px rgba(0,0,0,.06);border:1px solid rgba(197,160,89,.2);transition:transform .4s,box-shadow .4s;cursor:default}
-        .carousel-card:hover{transform:translateY(-10px) scale(1.03);box-shadow:0 20px 50px rgba(197,160,89,.2)}
-        .carousel-card img{width:100%;height:150px;object-fit:cover;border-radius:12px}
-        .carousel-card p{margin-top:12px;font-weight:700;color:var(--gold);font-size:1rem}
-
-        /* GALLERY */
-        .gallery{background:var(--cream-dark);position:relative}
+        /* ===== GALLERY ===== */
+        .gallery{background:var(--cream-dark)}
         .gallery h2{font-size:2.8rem;color:var(--gold);margin-bottom:40px}
         .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1100px;margin:0 auto}
-        .gallery-grid img{width:100%;height:280px;object-fit:cover;border-radius:16px;border:4px solid var(--white);box-shadow:0 8px 30px rgba(0,0,0,.06);transition:transform .5s,box-shadow .5s}
-        .gallery-grid img:hover{transform:scale(1.04);box-shadow:0 15px 40px rgba(197,160,89,.2)}
+        .gallery-grid img{width:100%;height:280px;object-fit:cover;border-radius:16px;border:4px solid var(--white);box-shadow:0 8px 30px rgba(0,0,0,.06);transition:transform .6s cubic-bezier(.34,1.56,.64,1),box-shadow .5s}
+        .gallery-grid img:hover{transform:scale(1.05) rotate(1deg);box-shadow:0 20px 50px rgba(197,160,89,.25)}
 
-        /* DETAILS */
-        .details{background:var(--white);position:relative}
-        .details-box{border:2px solid var(--gold);padding:50px 40px;display:inline-block;border-radius:100px 100px 0 0;background:var(--cream);position:relative;overflow:hidden}
-        .details-box::after{content:'';position:absolute;top:-2px;left:-2px;right:-2px;height:4px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:shimmer 3s infinite}
+        /* ===== DETAILS ===== */
+        .details{background:var(--white)}
+        .details-box{border:2px solid var(--gold);padding:50px 45px;display:inline-block;border-radius:100px 100px 0 0;background:var(--cream);position:relative;overflow:hidden}
+        .details-box::after{content:'';position:absolute;top:-2px;left:-2px;right:-2px;height:4px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold),var(--gold-light),transparent);animation:shimmer 3s infinite}
         @keyframes shimmer{0%,100%{opacity:.3}50%{opacity:1}}
         .details-box h2{font-size:2.5rem;color:var(--gold)}
         .details-box .date{font-size:1.5rem;margin-top:20px;color:var(--burgundy);font-weight:700}
         .details-box .time{font-size:1.2rem;color:#777;margin-top:5px}
-        .details-box hr{margin:20px 0;border:0;border-top:1px solid var(--gold);opacity:.3}
-        .details-box h3{color:var(--gold);margin-bottom:5px}
+        .details-box hr{margin:25px 0;border:0;border-top:1px solid var(--gold);opacity:.3}
+        .details-box h3{color:var(--gold);margin-bottom:8px;font-size:1.4rem}
         .details-box .venue{font-size:1.1rem;color:#555}
 
-        /* COUNTDOWN */
+        /* ===== COUNTDOWN ===== */
         .countdown-section{background:linear-gradient(135deg,var(--burgundy),#4A0E23);color:var(--white);padding:80px 20px;position:relative;overflow:hidden}
-        .countdown-section::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url('arabic_pattern.png') center/400px;opacity:.05}
-        .countdown-section h2{color:var(--gold-light);font-size:2.5rem;margin-bottom:40px}
-        .countdown-boxes{display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
-        .cd-box{background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border:1px solid rgba(197,160,89,.3);border-radius:20px;padding:25px 20px;min-width:100px;text-align:center}
+        .countdown-section::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url('arabic_pattern.png') center/350px;opacity:.05}
+        .countdown-section h2{color:var(--gold-light);font-size:2.5rem;margin-bottom:40px;position:relative}
+        .countdown-boxes{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;position:relative}
+        .cd-box{background:rgba(255,255,255,.07);backdrop-filter:blur(10px);border:1px solid rgba(197,160,89,.3);border-radius:20px;padding:25px 22px;min-width:105px;text-align:center;transition:transform .3s,box-shadow .3s}
+        .cd-box:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(197,160,89,.2)}
         .cd-box .num{font-size:3rem;font-weight:800;color:var(--gold-light);display:block;font-family:'Aref Ruqaa',serif}
         .cd-box .label{font-size:.9rem;color:rgba(255,255,255,.7);margin-top:5px}
 
-        /* RSVP */
+        /* ===== RSVP ===== */
         .rsvp{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--white);position:relative;overflow:hidden}
-        .rsvp::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url('arabic_pattern.png') center/300px;opacity:.08}
-        .rsvp h2{color:var(--white);font-size:2.5rem;margin-bottom:15px}
-        .rsvp p{font-size:1.1rem;opacity:.9}
-        .rsvp-btn{background:var(--white);color:var(--gold-dark);padding:18px 60px;border:none;border-radius:50px;font-size:1.3rem;font-weight:700;cursor:pointer;margin-top:30px;transition:.4s;font-family:'Tajawal',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.15)}
-        .rsvp-btn:hover{transform:scale(1.08) translateY(-3px);box-shadow:0 15px 40px rgba(0,0,0,.25)}
-        .rsvp .footer-note{margin-top:50px;font-size:1rem;opacity:.7}
+        .rsvp::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:url('arabic_pattern.png') center/250px;opacity:.06}
+        .rsvp h2{color:var(--white);font-size:2.5rem;margin-bottom:15px;position:relative}
+        .rsvp p{font-size:1.1rem;opacity:.9;position:relative}
+        .rsvp-btn{background:var(--white);color:var(--gold-dark);padding:18px 60px;border:none;border-radius:50px;font-size:1.3rem;font-weight:700;cursor:pointer;margin-top:30px;transition:.4s cubic-bezier(.34,1.56,.64,1);font-family:'Tajawal',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.15);position:relative}
+        .rsvp-btn:hover{transform:scale(1.1) translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.25)}
+        .rsvp .footer-note{margin-top:50px;font-size:1rem;opacity:.7;position:relative}
 
-        /* SCROLL ANIMATIONS */
-        .reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease}
+        /* ===== SCROLL REVEAL ===== */
+        .reveal{opacity:0;transform:translateY(50px);transition:opacity .9s ease,transform .9s cubic-bezier(.34,1.56,.64,1)}
         .reveal.visible{opacity:1;transform:translateY(0)}
+        .reveal-left{opacity:0;transform:translateX(60px);transition:opacity .9s ease,transform .9s cubic-bezier(.34,1.56,.64,1)}
+        .reveal-left.visible{opacity:1;transform:translateX(0)}
+        .reveal-right{opacity:0;transform:translateX(-60px);transition:opacity .9s ease,transform .9s cubic-bezier(.34,1.56,.64,1)}
+        .reveal-right.visible{opacity:1;transform:translateX(0)}
 
-        /* MUSIC BTN */
+        /* ===== MUSIC BTN ===== */
         .music-btn{position:fixed;bottom:20px;left:20px;width:50px;height:50px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;z-index:100;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 20px rgba(0,0,0,.15);transition:.3s}
         .music-btn:hover{transform:scale(1.1)}
         .music-btn svg{width:22px;height:22px;fill:var(--white)}
         .music-btn.playing{animation:pulseBtn 1.5s infinite}
-        @keyframes pulseBtn{0%,100%{box-shadow:0 0 0 0 rgba(197,160,89,.5)}50%{box-shadow:0 0 0 12px rgba(197,160,89,0)}}
+        @keyframes pulseBtn{0%,100%{box-shadow:0 0 0 0 rgba(197,160,89,.5)}50%{box-shadow:0 0 0 14px rgba(197,160,89,0)}}
 
-        @media(max-width:600px){
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:768px){
             section{padding:60px 15px}
-            .orbit-container{width:260px;height:260px}
-            .orbit-center{width:100px;height:100px}
-            .orbit-item{width:60px;height:60px}
-            .orbit-item:nth-child(1){top:-30px}.orbit-item:nth-child(2){bottom:-30px}.orbit-item:nth-child(3){left:-30px}.orbit-item:nth-child(4){right:-30px}
-            .carousel-card{width:150px}
-            .carousel-card img{height:110px}
-            .cd-box{min-width:70px;padding:15px 10px}
+            .hero-orbit{width:400px;height:400px}
+            .hero-cake-center{width:120px;height:120px}
+            .hero-float-item{width:65px;height:65px}
+            .hero-float-item:nth-child(1){top:-32px;margin-left:-32px}
+            .hero-float-item:nth-child(2){bottom:-32px;margin-left:-32px}
+            .hero-float-item:nth-child(3){left:-32px;margin-top:-32px}
+            .hero-float-item:nth-child(4){right:-32px;margin-top:-32px}
+            .timeline::before{right:20px;transform:none}
+            .tl-item,.tl-item:nth-child(odd){flex-direction:column;text-align:center}
+            .tl-dot{right:20px;top:20px;transform:none}
+            .tl-content{width:85%;margin-top:10px}
+            .item-card{width:160px}
+            .item-card img{height:130px}
+            .cd-box{min-width:70px;padding:15px 12px}
             .cd-box .num{font-size:2rem}
         }
     </style>
 </head>
 <body>
     <audio id="bg-music" loop preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" type="audio/mpeg">
+        <source src="wedding-music.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- ENVELOPE OVERLAY -->
+    <!-- SCREEN FLASH EFFECT -->
+    <div class="screen-flash" id="screen-flash"></div>
+
+    <!-- ENVELOPE -->
     <div id="envelope-overlay">
-        <div id="particles-container"></div>
+        <div class="env-glow"></div>
         <div class="env-part bottom-part">
-            <img src="gray.png" alt="Envelope Bottom">
+            <img src="gray.png" alt="Envelope">
         </div>
         <div class="env-part top-part">
-            <img src="blak.png" alt="Envelope Top">
+            <img src="blak.png" alt="Envelope">
         </div>
-        <div class="tap-hint">✦ اضغط لفتح الدعوة ✦</div>
+        <div class="tap-hint">
+            ✦ اضغط لفتح الدعوة ✦
+            <span class="tap-arrow">⬇</span>
+        </div>
     </div>
 
-    <!-- FLOATING BG PARTICLES -->
-    <div class="bg-particles" id="bg-particles"></div>
-
-    <!-- MUSIC BUTTON -->
-    <button class="music-btn" id="music-btn" title="تشغيل الموسيقى">
+    <!-- MUSIC -->
+    <button class="music-btn" id="music-btn" title="الموسيقى">
         <svg viewBox="0 0 24 24"><path d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/></svg>
     </button>
 
-    <!-- MAIN CONTENT -->
+    <!-- CONTENT -->
     <div class="website-content">
 
         <!-- HERO -->
         <section class="hero">
-            <div class="hero-mandala"></div>
-            <div class="hero-mandala"></div>
-            <div class="hero-mandala"></div>
-            <p class="bismillah amiri">بـسـم الله الرحـمـن الرحـيـم</p>
-            <span class="ampersand amiri">يسرّنا دعوتكم لحفل زفاف</span>
-            <h1>أحمد ♥ سارة</h1>
-            <p class="subtitle">نحتفل بحبنا .. وننتظر حضوركم</p>
-            <div class="scroll-indicator">▼</div>
+            <div class="hero-orbit">
+                <div class="hero-orbit-ring">
+                    <div class="hero-float-item"><img src="cake.png" alt="كيك"></div>
+                    <div class="hero-float-item"><img src="hospitality.png" alt="ضيافة"></div>
+                </div>
+                <div class="hero-orbit-ring">
+                    <div class="hero-float-item"><img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=200&h=200&fit=crop&q=80" alt="ورد"></div>
+                    <div class="hero-float-item"><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=200&h=200&fit=crop&q=80" alt="خاتم"></div>
+                </div>
+                <div class="hero-orbit-ring"></div>
+                <div class="hero-cake-center"><img src="cake.png" alt="كيك الزفاف"></div>
+            </div>
+
+            <div class="hero-text">
+                <p class="bismillah amiri">بـسـم الله الرحـمـن الرحـيـم</p>
+                <span class="invite-line amiri">يسرّنا دعوتكم لحفل زفاف</span>
+                <h1>أحمد ♥ سارة</h1>
+                <p class="subtitle">نحتفل بحبنا .. وننتظر حضوركم</p>
+            </div>
+            <div class="scroll-arrow">▼</div>
         </section>
 
-        <div class="ornament">✦ ✦ ✦</div>
+        <div class="ornament reveal">✦ ✦ ✦</div>
 
         <!-- STORY -->
-        <section class="story reveal">
-            <h2>حكايتنا</h2>
-            <p>بدأت رحلتنا بكلمة، واليوم نستكملها بعهد أبدي أمام الله وبحضوركم الكريم. نسعد بمشاركتكم لنا هذه اللحظات التي طالما انتظرناها لتكون بداية لحياة مليئة بالسعادة والمودة والرحمة. فحضوركم يُزيّن فرحتنا ويُكمل سعادتنا.</p>
-        </section>
-
-        <div class="ornament">✦ ✦ ✦</div>
-
-        <!-- CIRCLING ITEMS -->
-        <section class="circle-showcase reveal">
-            <h2>من تراثنا العربي</h2>
-            <div class="orbit-container">
-                <div class="orbit-center"><span>ضيافة<br>عربية</span></div>
-                <div class="orbit-ring">
-                    <div class="orbit-item"><img src="cake.png" alt="كيك الزفاف"></div>
-                    <div class="orbit-item"><img src="hospitality.png" alt="ضيافة عربية"></div>
-                </div>
-                <div class="orbit-ring">
-                    <div class="orbit-item"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=200&h=200&fit=crop" alt="تمور"></div>
-                    <div class="orbit-item"><img src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=200&h=200&fit=crop" alt="حلويات"></div>
-                </div>
-            </div>
-            <div class="items-carousel">
-                <div class="carousel-card"><img src="cake.png" alt="كيك الزفاف"><p>كيك الزفاف</p></div>
-                <div class="carousel-card"><img src="hospitality.png" alt="القهوة العربية"><p>القهوة العربية</p></div>
-                <div class="carousel-card"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=300&fit=crop" alt="تمور فاخرة"><p>تمور فاخرة</p></div>
-                <div class="carousel-card"><img src="https://images.unsplash.com/photo-1567337710282-00832b415979?w=400&h=300&fit=crop" alt="حلويات شرقية"><p>حلويات شرقية</p></div>
+        <section class="story">
+            <div class="story-bg-star">✦</div>
+            <div class="story-bg-star">✦</div>
+            <div class="reveal">
+                <h2>حكايتنا</h2>
+                <p>بدأت رحلتنا بكلمة، واليوم نستكملها بعهد أبدي أمام الله وبحضوركم الكريم. نسعد بمشاركتكم لنا هذه اللحظات التي طالما انتظرناها لتكون بداية لحياة مليئة بالسعادة والمودة والرحمة. فحضوركم يُزيّن فرحتنا ويُكمل سعادتنا.</p>
             </div>
         </section>
 
-        <div class="ornament">✦ ✦ ✦</div>
+        <div class="ornament reveal">✦ ✦ ✦</div>
+
+        <!-- TIMELINE -->
+        <section class="timeline-section">
+            <h2 class="reveal">رحلتنا معاً</h2>
+            <div class="timeline">
+                <div class="tl-item reveal-right">
+                    <div class="tl-dot"></div>
+                    <div class="tl-content"><div class="tl-icon">💍</div><h3>الخطوبة</h3><p>بدأت قصتنا بوعد جميل وخطوبة مباركة بين الأهل والأحباب</p></div>
+                </div>
+                <div class="tl-item reveal-left">
+                    <div class="tl-dot"></div>
+                    <div class="tl-content"><div class="tl-icon">📝</div><h3>عقد القران</h3><p>توّجنا حبنا بعقد شرعي مبارك في أجواء روحانية</p></div>
+                </div>
+                <div class="tl-item reveal-right">
+                    <div class="tl-dot"></div>
+                    <div class="tl-content"><div class="tl-icon">🎉</div><h3>حفل الزفاف</h3><p>واليوم نحتفل بزفافنا ونتشرف بحضوركم لمشاركتنا فرحتنا</p></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="ornament reveal">✦ ✦ ✦</div>
+
+        <!-- ITEMS SHOWCASE -->
+        <section class="circle-showcase">
+            <h2 class="reveal">من أجواء حفلنا</h2>
+            <div class="items-row">
+                <div class="item-card reveal"><img src="cake.png" alt="كيك الزفاف"><p>كيك الزفاف</p></div>
+                <div class="item-card reveal"><img src="hospitality.png" alt="القهوة العربية"><p>القهوة العربية</p></div>
+                <div class="item-card reveal"><img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=500&h=400&fit=crop&q=80" alt="تنسيق الزهور"><p>تنسيق الزهور</p></div>
+                <div class="item-card reveal"><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=400&fit=crop&q=80" alt="خواتم الزفاف"><p>خواتم الزفاف</p></div>
+            </div>
+        </section>
+
+        <div class="ornament reveal">✦ ✦ ✦</div>
 
         <!-- GALLERY -->
-        <section class="gallery reveal">
-            <h2>لحظاتنا الجميلة</h2>
+        <section class="gallery">
+            <h2 class="reveal">لحظاتنا الجميلة</h2>
             <div class="gallery-grid">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="لحظة 1">
-                <img src="https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&w=600&q=80" alt="لحظة 2">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600&q=80" alt="لحظة 3">
+                <img class="reveal" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="لحظة ١">
+                <img class="reveal" src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=600&q=80" alt="لحظة ٢">
+                <img class="reveal" src="https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&w=600&q=80" alt="لحظة ٣">
             </div>
         </section>
 
-        <div class="ornament">✦ ✦ ✦</div>
+        <div class="ornament reveal">✦ ✦ ✦</div>
 
         <!-- DETAILS -->
         <section class="details reveal">
@@ -268,82 +354,88 @@
             <button class="rsvp-btn" onclick="alert('شكراً لتأكيد حضوركم! 🌹')">تأكيد الحضور الآن</button>
             <p class="footer-note">بوجودكم تكتمل فرحتنا ♥</p>
         </section>
-
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded',()=>{
-            const overlay=document.getElementById('envelope-overlay');
-            const body=document.body;
-            const pc=document.getElementById('particles-container');
-            const musicBtn=document.getElementById('music-btn');
-            const music=document.getElementById('bg-music');
+    document.addEventListener('DOMContentLoaded',()=>{
+        const overlay=document.getElementById('envelope-overlay');
+        const body=document.body;
+        const music=document.getElementById('bg-music');
+        const musicBtn=document.getElementById('music-btn');
+        const flash=document.getElementById('screen-flash');
 
-            // BG particles
-            const bgP=document.getElementById('bg-particles');
-            for(let i=0;i<25;i++){
-                const p=document.createElement('div');
-                p.className='bg-particle';
-                p.style.left=Math.random()*100+'%';
-                p.style.animationDuration=(8+Math.random()*12)+'s';
-                p.style.animationDelay=Math.random()*10+'s';
-                p.style.width=p.style.height=(3+Math.random()*6)+'px';
-                bgP.appendChild(p);
+        // Sparkles background
+        for(let i=0;i<30;i++){
+            const s=document.createElement('div');
+            s.className='sparkle';
+            s.style.left=Math.random()*100+'%';
+            s.style.animationDuration=(10+Math.random()*15)+'s';
+            s.style.animationDelay=Math.random()*12+'s';
+            s.style.width=s.style.height=(2+Math.random()*5)+'px';
+            document.body.appendChild(s);
+        }
+
+        // Confetti burst on envelope open
+        function launchConfetti(){
+            const colors=['#C5A059','#D4AF37','#FFD700','#F5EED9','#8B6914','#fff'];
+            const shapes=['circle','rect'];
+            for(let i=0;i<80;i++){
+                const c=document.createElement('div');
+                c.className='confetti';
+                c.style.left=Math.random()*100+'%';
+                c.style.background=colors[Math.floor(Math.random()*colors.length)];
+                const w=6+Math.random()*10;
+                c.style.width=w+'px';
+                c.style.height=(w*(1+Math.random()))+'px';
+                c.style.borderRadius=Math.random()>.5?'50%':'2px';
+                c.style.animation=`confettiFall ${2+Math.random()*3}s ease-in ${Math.random()*1.2}s forwards`;
+                document.body.appendChild(c);
+                setTimeout(()=>c.remove(),6000);
             }
+        }
 
-            // Envelope open
-            function createParticles(){
-                const colors=['#C5A059','#D4AF37','#FFD700','#8B6914','#F5EED9'];
-                for(let i=0;i<50;i++){
-                    const p=document.createElement('div');
-                    p.className='particle';
-                    p.style.background=colors[Math.floor(Math.random()*colors.length)];
-                    p.style.width=p.style.height=(4+Math.random()*10)+'px';
-                    pc.appendChild(p);
-                    const angle=Math.random()*Math.PI*2;
-                    const tx=Math.cos(angle)*250+(Math.random()-.5)*150;
-                    const ty=Math.sin(angle)*250+(Math.random()-.5)*150;
-                    p.animate([
-                        {transform:'translate(0,0) scale(1) rotate(0deg)',opacity:1},
-                        {transform:`translate(${tx}px,${ty}px) scale(0) rotate(${Math.random()*720}deg)`,opacity:0}
-                    ],{duration:1200+Math.random()*1200,easing:'cubic-bezier(0,.9,.57,1)',fill:'forwards'});
-                }
-            }
-
-            overlay.addEventListener('click',()=>{
-                createParticles();
-                overlay.classList.add('open');
-                body.classList.add('opened');
-                music.play().catch(()=>{});
-                musicBtn.classList.add('playing');
-            });
-
-            // Music toggle
-            let playing=true;
-            musicBtn.addEventListener('click',()=>{
-                if(music.paused){music.play();musicBtn.classList.add('playing');playing=true}
-                else{music.pause();musicBtn.classList.remove('playing');playing=false}
-            });
-
-            // Scroll reveal
-            const reveals=document.querySelectorAll('.reveal');
-            const obs=new IntersectionObserver((entries)=>{
-                entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
-            },{threshold:.15});
-            reveals.forEach(r=>obs.observe(r));
-
-            // Countdown
-            const wedding=new Date('2026-08-20T20:00:00');
-            function updateCD(){
-                const now=new Date();const diff=wedding-now;
-                if(diff<=0)return;
-                document.getElementById('cd-days').textContent=Math.floor(diff/864e5);
-                document.getElementById('cd-hours').textContent=Math.floor((diff%864e5)/36e5);
-                document.getElementById('cd-mins').textContent=Math.floor((diff%36e5)/6e4);
-                document.getElementById('cd-secs').textContent=Math.floor((diff%6e4)/1e3);
-            }
-            updateCD();setInterval(updateCD,1000);
+        // Envelope click
+        overlay.addEventListener('click',()=>{
+            flash.classList.add('active');
+            setTimeout(()=>flash.classList.remove('active'),800);
+            launchConfetti();
+            overlay.classList.add('open');
+            body.classList.add('opened');
+            music.volume=0.4;
+            music.play().catch(()=>{});
+            musicBtn.classList.add('playing');
         });
+
+        // Music toggle
+        musicBtn.addEventListener('click',()=>{
+            if(music.paused){music.play();musicBtn.classList.add('playing')}
+            else{music.pause();musicBtn.classList.remove('playing')}
+        });
+
+        // Scroll reveal
+        const revealEls=document.querySelectorAll('.reveal,.reveal-left,.reveal-right');
+        const obs=new IntersectionObserver(entries=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    e.target.classList.add('visible');
+                }
+            });
+        },{threshold:.12});
+        revealEls.forEach(r=>obs.observe(r));
+
+        // Countdown
+        const weddingDate=new Date('2026-08-20T20:00:00');
+        function updateCountdown(){
+            const now=new Date(),diff=weddingDate-now;
+            if(diff<=0)return;
+            document.getElementById('cd-days').textContent=Math.floor(diff/864e5);
+            document.getElementById('cd-hours').textContent=Math.floor((diff%864e5)/36e5);
+            document.getElementById('cd-mins').textContent=Math.floor((diff%36e5)/6e4);
+            document.getElementById('cd-secs').textContent=Math.floor((diff%6e4)/1e3);
+        }
+        updateCountdown();
+        setInterval(updateCountdown,1000);
+    });
     </script>
 </body>
 </html>
