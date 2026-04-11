@@ -63,32 +63,46 @@
         /* ===== HERO ===== */
         .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(ellipse at center,rgba(252,249,242,1) 0%,rgba(245,238,217,.9) 100%);position:relative;overflow:hidden}
 
-        /* Hero orbiting cake */
-        .hero-orbit{position:absolute;width:650px;height:650px;top:50%;left:50%;transform:translate(-50%,-50%)}
-        .hero-orbit-ring{position:absolute;width:100%;height:100%;border:1px dashed rgba(197,160,89,.2);border-radius:50%;animation:heroSpin 30s linear infinite}
-        .hero-orbit-ring:nth-child(2){width:80%;height:80%;top:10%;left:10%;animation-duration:22s;animation-direction:reverse;border-style:dotted}
-        .hero-orbit-ring:nth-child(3){width:60%;height:60%;top:20%;left:20%;animation-duration:18s;border-color:rgba(197,160,89,.15)}
-        @keyframes heroSpin{to{transform:rotate(360deg)}}
+        /* Hero scene container */
+        .hero-scene{position:relative;width:420px;height:420px;margin-bottom:20px}
+        @media(max-width:600px){.hero-scene{width:300px;height:300px}}
 
-        .hero-float-item{position:absolute;width:90px;height:90px;border-radius:50%;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.12);border:3px solid var(--gold);background:var(--white);animation:heroFloat 6s ease-in-out infinite}
-        .hero-float-item img{width:100%;height:100%;object-fit:cover}
-        .hero-float-item:nth-child(1){top:-45px;left:50%;margin-left:-45px}
-        .hero-float-item:nth-child(2){bottom:-45px;left:50%;margin-left:-45px;animation-delay:-1.5s}
-        .hero-float-item:nth-child(3){top:50%;left:-45px;margin-top:-45px;animation-delay:-3s}
-        .hero-float-item:nth-child(4){top:50%;right:-45px;margin-top:-45px;animation-delay:-4.5s}
-        @keyframes heroFloat{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.1) translateY(-8px)}}
+        /* Decorative orbit rings */
+        .hero-ring{position:absolute;border-radius:50%;border:1.5px dashed rgba(197,160,89,.18)}
+        .hero-ring-1{width:100%;height:100%;top:0;left:0;animation:ringPulse 4s ease-in-out infinite}
+        .hero-ring-2{width:80%;height:80%;top:10%;left:10%;border-style:dotted;border-color:rgba(197,160,89,.12);animation:ringPulse 4s ease-in-out infinite 1s}
+        .hero-ring-3{width:60%;height:60%;top:20%;left:20%;border-color:rgba(197,160,89,.08);animation:ringPulse 4s ease-in-out infinite 2s}
+        @keyframes ringPulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
 
-        .hero-cake-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;overflow:hidden;box-shadow:0 0 80px rgba(197,160,89,.35),0 0 160px rgba(197,160,89,.1);border:4px solid var(--gold);z-index:2}
-        .hero-cake-center img{width:100%;height:100%;object-fit:cover}
+        /* SVG cake in center */
+        .hero-cake-svg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;filter:drop-shadow(0 10px 40px rgba(197,160,89,.35));animation:cakeFloat 5s ease-in-out infinite}
+        @keyframes cakeFloat{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-12px)}}
 
-        .hero-text{position:relative;z-index:3}
+        /* Orbiting couple container - rotates the whole track */
+        .orbit-track{position:absolute;width:100%;height:100%;top:0;left:0;animation:orbitCouple 12s linear infinite;z-index:3}
+        @keyframes orbitCouple{to{transform:rotate(360deg)}}
+
+        /* Couple SVG sits at top of the orbit, counter-rotates to stay upright */
+        .orbit-couple{position:absolute;top:-30px;left:50%;transform:translateX(-50%);animation:coupleUpright 12s linear infinite}
+        @keyframes coupleUpright{to{transform:translateX(-50%) rotate(-360deg)}}
+        .orbit-couple svg{filter:drop-shadow(0 6px 20px rgba(0,0,0,.15));animation:coupleGentleBob 3s ease-in-out infinite}
+        @keyframes coupleGentleBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+        /* Glow behind cake */
+        .hero-cake-glow{position:absolute;top:50%;left:50%;width:200px;height:200px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.2),transparent 70%);animation:glowPulse 3s ease-in-out infinite;z-index:1}
+        @keyframes glowPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}}
+
+        /* Small floating hearts */
+        .float-heart{position:absolute;color:var(--gold);opacity:0;font-size:1.2rem;animation:heartFloat 4s ease-in-out infinite;z-index:4;pointer-events:none}
+        @keyframes heartFloat{0%{opacity:0;transform:translateY(0) scale(.5)}30%{opacity:.7}70%{opacity:.5}100%{opacity:0;transform:translateY(-60px) scale(1)}}
+
+        .hero-text{position:relative;z-index:5}
         .hero .bismillah{font-size:1.6rem;color:var(--gold);margin-bottom:15px;opacity:0}
         .hero h1{font-size:clamp(3.5rem,10vw,6.5rem);color:var(--gold);margin:5px 0;opacity:0;text-shadow:0 4px 25px rgba(197,160,89,.3)}
         .hero .invite-line{font-size:clamp(1.2rem,3vw,1.8rem);color:var(--burgundy);opacity:0;display:block;margin:5px 0}
         .hero .subtitle{font-size:1.3rem;letter-spacing:3px;color:var(--text);opacity:0}
         .hero .scroll-arrow{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:1.8rem;opacity:0}
 
-        /* Hero timeline animations */
         body.opened .hero .bismillah{animation:heroReveal 1s ease forwards;animation-delay:1s}
         body.opened .hero .invite-line{animation:heroReveal 1s ease forwards;animation-delay:1.4s}
         body.opened .hero h1{animation:heroRevealBig 1.2s ease forwards;animation-delay:1.8s}
@@ -242,17 +256,87 @@
 
         <!-- HERO -->
         <section class="hero">
-            <div class="hero-orbit">
-                <div class="hero-orbit-ring">
-                    <div class="hero-float-item"><img src="cake.png" alt="كيك"></div>
-                    <div class="hero-float-item"><img src="hospitality.png" alt="ضيافة"></div>
+            <!-- Scene: Cake + Orbiting Couple -->
+            <div class="hero-scene">
+                <!-- Decorative rings -->
+                <div class="hero-ring hero-ring-1"></div>
+                <div class="hero-ring hero-ring-2"></div>
+                <div class="hero-ring hero-ring-3"></div>
+
+                <!-- Glow behind cake -->
+                <div class="hero-cake-glow"></div>
+
+                <!-- SVG Wedding Cake (drawn) -->
+                <div class="hero-cake-svg">
+                    <svg width="160" height="200" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Base plate -->
+                        <ellipse cx="80" cy="190" rx="75" ry="10" fill="#B8943E" opacity=".4"/>
+                        <!-- Tier 1 (bottom) -->
+                        <rect x="15" y="140" width="130" height="50" rx="8" fill="#FFF8EE" stroke="#C5A059" stroke-width="2"/>
+                        <line x1="20" y1="155" x2="140" y2="155" stroke="#D4AF37" stroke-width="1" opacity=".5"/>
+                        <line x1="20" y1="175" x2="140" y2="175" stroke="#D4AF37" stroke-width="1" opacity=".5"/>
+                        <!-- Gold arabesque dots tier1 -->
+                        <circle cx="35" cy="165" r="3" fill="#D4AF37" opacity=".6"/><circle cx="55" cy="165" r="3" fill="#D4AF37" opacity=".6"/><circle cx="75" cy="165" r="3" fill="#D4AF37" opacity=".6"/><circle cx="95" cy="165" r="3" fill="#D4AF37" opacity=".6"/><circle cx="115" cy="165" r="3" fill="#D4AF37" opacity=".6"/><circle cx="135" cy="165" r="3" fill="#D4AF37" opacity=".6"/>
+                        <!-- Tier 2 (middle) -->
+                        <rect x="30" y="90" width="100" height="50" rx="7" fill="#FFF8EE" stroke="#C5A059" stroke-width="2"/>
+                        <line x1="35" y1="105" x2="125" y2="105" stroke="#D4AF37" stroke-width="1" opacity=".5"/>
+                        <line x1="35" y1="125" x2="125" y2="125" stroke="#D4AF37" stroke-width="1" opacity=".5"/>
+                        <!-- Gold pattern tier2 -->
+                        <path d="M50 115 Q60 108 70 115 Q80 108 90 115 Q100 108 110 115" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity=".7"/>
+                        <!-- Tier 3 (top) -->
+                        <rect x="48" y="48" width="64" height="42" rx="6" fill="#FFF8EE" stroke="#C5A059" stroke-width="2"/>
+                        <path d="M58 68 Q65 62 72 68 Q79 62 86 68 Q93 62 100 68" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity=".7"/>
+                        <!-- Heart topper -->
+                        <path d="M80 30 C80 30 68 18 68 28 C68 36 80 44 80 44 C80 44 92 36 92 28 C92 18 80 30 80 30Z" fill="#C5A059"/>
+                        <!-- Small roses -->
+                        <circle cx="50" cy="90" r="5" fill="#E8B4B4"/><circle cx="52" cy="88" r="3" fill="#F0C8C8"/>
+                        <circle cx="110" cy="90" r="5" fill="#E8B4B4"/><circle cx="112" cy="88" r="3" fill="#F0C8C8"/>
+                        <circle cx="80" cy="48" r="5" fill="#E8B4B4"/><circle cx="82" cy="46" r="3" fill="#F0C8C8"/>
+                        <circle cx="30" cy="140" r="5" fill="#E8B4B4"/><circle cx="32" cy="138" r="3" fill="#F0C8C8"/>
+                        <circle cx="130" cy="140" r="5" fill="#E8B4B4"/><circle cx="132" cy="138" r="3" fill="#F0C8C8"/>
+                    </svg>
                 </div>
-                <div class="hero-orbit-ring">
-                    <div class="hero-float-item"><img src="https://images.unsplash.com/photo-1464349153735-7db50ed83c84?w=200&h=200&fit=crop&q=80" alt="ورد"></div>
-                    <div class="hero-float-item"><img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=200&h=200&fit=crop&q=80" alt="خاتم"></div>
+
+                <!-- Orbiting couple -->
+                <div class="orbit-track">
+                    <div class="orbit-couple">
+                        <svg width="90" height="110" viewBox="0 0 90 110" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Groom -->
+                            <circle cx="28" cy="18" r="12" fill="#F5DEB3"/><!-- head -->
+                            <rect x="18" y="30" width="20" height="35" rx="5" fill="#2C2C2C"/><!-- bisht -->
+                            <rect x="22" y="30" width="12" height="35" rx="3" fill="#FFFFFF"/><!-- thobe -->
+                            <rect x="18" y="13" width="20" height="6" rx="2" fill="#FFFFFF"/><!-- shemagh -->
+                            <rect x="20" y="10" width="16" height="5" rx="1" fill="#2C2C2C"/><!-- egal -->
+                            <rect x="22" y="65" width="5" height="18" rx="2" fill="#2C2C2C"/><!-- leg L -->
+                            <rect x="29" y="65" width="5" height="18" rx="2" fill="#2C2C2C"/><!-- leg R -->
+                            <ellipse cx="24" cy="85" rx="5" ry="3" fill="#1A1A1A"/><!-- shoe L -->
+                            <ellipse cx="32" cy="85" rx="5" ry="3" fill="#1A1A1A"/><!-- shoe R -->
+
+                            <!-- Bride -->
+                            <circle cx="62" cy="18" r="12" fill="#F5DEB3"/><!-- head -->
+                            <path d="M50 30 Q56 28 62 26 Q68 28 74 30 L76 75 Q62 82 48 75 Z" fill="#FFFFFF"/><!-- dress -->
+                            <path d="M50 30 Q56 28 62 26 Q68 28 74 30 L72 40 Q62 36 52 40 Z" fill="#F0E6D3"/><!-- bodice detail -->
+                            <ellipse cx="62" cy="80" rx="16" ry="6" fill="#FFFFFF" opacity=".8"/><!-- dress bottom -->
+                            <path d="M50 10 Q62 0 74 10 L74 18 Q62 14 50 18 Z" fill="#FFFFFF" opacity=".7"/><!-- veil top -->
+                            <path d="M74 18 Q78 40 72 55" fill="none" stroke="#FFFFFF" stroke-width="8" opacity=".3"/><!-- veil side -->
+                            <!-- Bouquet -->
+                            <circle cx="52" cy="55" r="6" fill="#E8B4B4"/>
+                            <circle cx="48" cy="52" r="4" fill="#F0C8C8"/>
+                            <circle cx="56" cy="52" r="4" fill="#F0C8C8"/>
+                            <circle cx="52" cy="50" r="3" fill="#FFD5D5"/>
+                            <line x1="52" y1="61" x2="52" y2="70" stroke="#6B8E4E" stroke-width="2"/>
+
+                            <!-- Holding hands (connecting line) -->
+                            <path d="M38 50 Q45 48 48 50" fill="none" stroke="#F5DEB3" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="hero-orbit-ring"></div>
-                <div class="hero-cake-center"><img src="cake.png" alt="كيك الزفاف"></div>
+
+                <!-- Floating hearts -->
+                <div class="float-heart" style="top:30%;left:15%;animation-delay:0s">♥</div>
+                <div class="float-heart" style="top:60%;right:10%;animation-delay:1.5s">♥</div>
+                <div class="float-heart" style="top:20%;right:25%;animation-delay:3s">♥</div>
+                <div class="float-heart" style="bottom:25%;left:20%;animation-delay:2s">♥</div>
             </div>
 
             <div class="hero-text">
