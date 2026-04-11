@@ -63,23 +63,67 @@
         /* ===== HERO ===== */
         .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;background:radial-gradient(ellipse at center,rgba(252,249,242,1) 0%,rgba(245,238,217,.9) 100%);position:relative;overflow:hidden}
 
-        /* Hero scene container */
-        .hero-scene{position:relative;width:280px;height:380px;margin-bottom:20px}
-        @media(max-width:600px){.hero-scene{width:220px;height:300px}}
-
-        /* The whole cake+couple spins in place */
-        .hero-cake-unit{animation:cakeSpin 15s linear infinite;transform-origin:center center;filter:drop-shadow(0 15px 50px rgba(197,160,89,.35))}
-        @keyframes cakeSpin{to{transform:rotateY(360deg)}}
-
-        /* Gentle floating on top of the spin */
-        .hero-scene{animation:sceneFloat 5s ease-in-out infinite}
+        /* Hero scene */
+        .hero-scene{position:relative;width:320px;height:420px;margin-bottom:20px;perspective:900px;animation:sceneFloat 5s ease-in-out infinite}
+        @media(max-width:600px){.hero-scene{width:240px;height:340px}}
         @keyframes sceneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 
-        /* Glow behind cake */
-        .hero-cake-glow{position:absolute;top:50%;left:50%;width:250px;height:250px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.25),transparent 70%);animation:glowPulse 3s ease-in-out infinite;z-index:0}
+        /* 3D stage */
+        .cake-3d{position:relative;width:100%;height:100%;transform-style:preserve-3d;animation:cakeSpin 12s linear infinite}
+        @keyframes cakeSpin{to{transform:rotateY(360deg)}}
+
+        /* Base shadow */
+        .cake-shadow{position:absolute;bottom:0;left:50%;width:200px;height:20px;transform:translateX(-50%) rotateX(90deg);background:radial-gradient(ellipse,rgba(0,0,0,.15),transparent 70%);border-radius:50%}
+
+        /* Each tier is a cylinder made with CSS */
+        .tier{position:absolute;left:50%;transform-style:preserve-3d;border-radius:50%}
+        /* Tier top face */
+        .tier-top{position:absolute;width:100%;height:0;padding-bottom:100%;border-radius:50%;transform:rotateX(90deg) translateZ(0px);top:0;border:2px solid var(--gold)}
+        /* Tier bottom face */
+        .tier-bottom{position:absolute;width:100%;padding-bottom:100%;border-radius:50%;transform:rotateX(90deg);bottom:0;border:2px solid rgba(197,160,89,.3)}
+        /* Tier body (cylinder wall) — we use a gradient trick */
+        .tier-body{position:absolute;width:100%;height:100%;border-radius:12px;border:2px solid var(--gold);overflow:hidden}
+        .tier-body::before{content:'';position:absolute;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 30%,rgba(212,175,55,.12) 30%,rgba(212,175,55,.12) 31%);pointer-events:none}
+        /* Gold wave pattern on body */
+        .tier-pattern{position:absolute;bottom:25%;left:5%;width:90%;height:20px;border-bottom:2px solid rgba(212,175,55,.35);border-radius:0 0 50% 50%/0 0 100% 100%}
+        .tier-dots{position:absolute;top:50%;left:0;width:100%;display:flex;justify-content:space-around;padding:0 10%}
+        .tier-dots span{width:6px;height:6px;background:var(--gold);border-radius:50%;opacity:.5}
+
+        /* Tier 1 - bottom */
+        .tier-1{width:220px;height:80px;bottom:20px;margin-left:-110px;}
+        .tier-1 .tier-top{background:linear-gradient(135deg,#FFF8EE,#F5EED9)}
+        .tier-1 .tier-bottom{background:#F0E6D3}
+        .tier-1 .tier-body{background:linear-gradient(160deg,#FFF8EE 0%,#F5EED9 40%,#E8DCC8 100%)}
+        .tier-1 .tier-top{transform:rotateX(90deg) translateZ(-80px)}
+        /* Roses */
+        .tier-rose{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#FFD5D5,#E8B4B4);box-shadow:inset 2px 2px 4px rgba(255,255,255,.5);z-index:3}
+        .tier-rose::after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#F0C8C8,#E8B4B4);top:1px;left:3px}
+
+        /* Tier 2 - middle */
+        .tier-2{width:160px;height:75px;bottom:100px;margin-left:-80px}
+        .tier-2 .tier-top{background:linear-gradient(135deg,#FFF8EE,#F5EED9);transform:rotateX(90deg) translateZ(-75px)}
+        .tier-2 .tier-bottom{background:#F0E6D3}
+        .tier-2 .tier-body{background:linear-gradient(160deg,#FFF8EE 0%,#F5EED9 40%,#E8DCC8 100%)}
+
+        /* Tier 3 - top */
+        .tier-3{width:110px;height:65px;bottom:175px;margin-left:-55px}
+        .tier-3 .tier-top{background:linear-gradient(135deg,#FFF8EE,#F5EED9);transform:rotateX(90deg) translateZ(-65px)}
+        .tier-3 .tier-bottom{background:#F0E6D3}
+        .tier-3 .tier-body{background:linear-gradient(160deg,#FFF8EE 0%,#F5EED9 40%,#E8DCC8 100%)}
+
+        /* Couple on top */
+        .cake-couple{position:absolute;bottom:240px;left:50%;transform:translateX(-50%);z-index:5}
+        .cake-couple svg{filter:drop-shadow(0 4px 12px rgba(0,0,0,.12))}
+
+        /* Heart topper */
+        .cake-heart{position:absolute;bottom:330px;left:50%;transform:translateX(-50%);font-size:1.8rem;color:var(--gold);animation:heartBeat 1.5s ease-in-out infinite;z-index:6}
+        @keyframes heartBeat{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.2)}}
+
+        /* Glow */
+        .hero-cake-glow{position:absolute;top:55%;left:50%;width:280px;height:280px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.2),transparent 70%);animation:glowPulse 3s ease-in-out infinite;z-index:0}
         @keyframes glowPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}}
 
-        /* Small floating hearts */
+        /* Floating hearts */
         .float-heart{position:absolute;color:var(--gold);opacity:0;font-size:1.2rem;animation:heartFloat 4s ease-in-out infinite;z-index:4;pointer-events:none}
         @keyframes heartFloat{0%{opacity:0;transform:translateY(0) scale(.5)}30%{opacity:.7}70%{opacity:.5}100%{opacity:0;transform:translateY(-60px) scale(1)}}
 
@@ -243,83 +287,89 @@
 
         <!-- HERO -->
         <section class="hero">
-            <!-- Scene: Cake with couple on top, spinning in place -->
+            <!-- 3D Cake Scene -->
             <div class="hero-scene">
                 <div class="hero-cake-glow"></div>
-                <div class="hero-cake-unit">
-                    <svg width="280" height="380" viewBox="0 0 280 380" xmlns="http://www.w3.org/2000/svg">
-                        <!-- === COUPLE ON TOP === -->
-                        <!-- Groom (right side in RTL) -->
-                        <circle cx="115" cy="38" r="16" fill="#F5DEB3"/><!-- head -->
-                        <rect x="99" y="10" width="32" height="8" rx="3" fill="#FFFFFF"/><!-- shemagh -->
-                        <rect x="102" y="6" width="26" height="6" rx="2" fill="#2C2C2C"/><!-- egal -->
-                        <rect x="101" y="54" width="28" height="45" rx="6" fill="#2C2C2C"/><!-- bisht -->
-                        <rect x="106" y="54" width="18" height="45" rx="4" fill="#FFFFFF"/><!-- thobe -->
-                        <rect x="106" y="99" width="7" height="16" rx="2" fill="#2C2C2C"/><!-- leg L -->
-                        <rect x="117" y="99" width="7" height="16" rx="2" fill="#2C2C2C"/><!-- leg R -->
-                        <ellipse cx="109" cy="117" rx="6" ry="3" fill="#1A1A1A"/><!-- shoe -->
-                        <ellipse cx="121" cy="117" rx="6" ry="3" fill="#1A1A1A"/><!-- shoe -->
+                <div class="cake-3d">
+                    <!-- Heart topper -->
+                    <div class="cake-heart">♥</div>
 
-                        <!-- Bride (left side in RTL) -->
-                        <circle cx="165" cy="38" r="16" fill="#F5DEB3"/><!-- head -->
-                        <path d="M148 56 Q155 52 165 50 Q175 52 182 56 L186 115 Q165 124 144 115 Z" fill="#FFFFFF"/><!-- dress -->
-                        <path d="M148 56 Q155 52 165 50 Q175 52 182 56 L179 70 Q165 65 151 70 Z" fill="#F0E6D3"/><!-- bodice -->
-                        <ellipse cx="165" cy="118" rx="22" ry="7" fill="#FFFFFF" opacity=".7"/><!-- dress flare -->
-                        <path d="M148 26 Q165 12 182 26 L182 38 Q165 30 148 38 Z" fill="#FFFFFF" opacity=".6"/><!-- veil -->
-                        <path d="M182 38 Q188 65 180 90" fill="none" stroke="#FFFFFF" stroke-width="10" opacity=".25"/><!-- veil trail -->
-                        <!-- Bouquet -->
-                        <circle cx="152" cy="88" r="7" fill="#E8B4B4"/>
-                        <circle cx="147" cy="84" r="5" fill="#F0C8C8"/>
-                        <circle cx="157" cy="84" r="5" fill="#F0C8C8"/>
-                        <circle cx="152" cy="82" r="4" fill="#FFD5D5"/>
-                        <line x1="152" y1="95" x2="152" y2="105" stroke="#6B8E4E" stroke-width="2.5"/>
+                    <!-- Couple on top (SVG) -->
+                    <div class="cake-couple">
+                        <svg width="80" height="90" viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Groom -->
+                            <circle cx="25" cy="14" r="11" fill="#F5DEB3"/>
+                            <rect x="15" y="8" width="20" height="6" rx="2" fill="#FFFFFF"/>
+                            <rect x="17" y="5" width="16" height="5" rx="1" fill="#2C2C2C"/>
+                            <rect x="14" y="25" width="22" height="35" rx="5" fill="#2C2C2C"/>
+                            <rect x="18" y="25" width="14" height="35" rx="3" fill="#FFF"/>
+                            <rect x="18" y="60" width="6" height="14" rx="2" fill="#2C2C2C"/>
+                            <rect x="26" y="60" width="6" height="14" rx="2" fill="#2C2C2C"/>
+                            <ellipse cx="21" cy="76" rx="5" ry="2.5" fill="#1A1A1A"/>
+                            <ellipse cx="29" cy="76" rx="5" ry="2.5" fill="#1A1A1A"/>
+                            <!-- Bride -->
+                            <circle cx="55" cy="14" r="11" fill="#F5DEB3"/>
+                            <path d="M43 10 Q55 2 67 10 L67 16 Q55 10 43 16Z" fill="#FFF" opacity=".6"/>
+                            <path d="M67 16 Q70 35 65 50" fill="none" stroke="#FFF" stroke-width="7" opacity=".2"/>
+                            <path d="M44 25 Q49 23 55 22 Q61 23 66 25 L69 68 Q55 75 41 68Z" fill="#FFF"/>
+                            <path d="M44 25 Q49 23 55 22 Q61 23 66 25 L64 35 Q55 31 46 35Z" fill="#F0E6D3"/>
+                            <ellipse cx="55" cy="71" rx="16" ry="5" fill="#FFF" opacity=".7"/>
+                            <circle cx="45" cy="48" r="5" fill="#E8B4B4"/>
+                            <circle cx="42" cy="45" r="3.5" fill="#F0C8C8"/>
+                            <circle cx="48" cy="45" r="3.5" fill="#F0C8C8"/>
+                            <circle cx="45" cy="43" r="2.5" fill="#FFD5D5"/>
+                            <line x1="45" y1="53" x2="45" y2="60" stroke="#6B8E4E" stroke-width="2"/>
+                            <!-- Holding hands -->
+                            <path d="M36 42 Q39 40 42 42" fill="none" stroke="#F5DEB3" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
 
-                        <!-- Holding hands -->
-                        <path d="M129 78 Q138 74 145 78" fill="none" stroke="#F5DEB3" stroke-width="4" stroke-linecap="round"/>
+                    <!-- Tier 3 (top, smallest) -->
+                    <div class="tier tier-3">
+                        <div class="tier-body">
+                            <div class="tier-pattern"></div>
+                            <div class="tier-dots"><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="tier-top"></div>
+                        <div class="tier-bottom"></div>
+                        <div class="tier-rose" style="top:-6px;left:10px"></div>
+                        <div class="tier-rose" style="top:-6px;right:10px"></div>
+                    </div>
 
-                        <!-- Love heart between them -->
-                        <path d="M140 20 C140 20 133 12 133 17 C133 22 140 27 140 27 C140 27 147 22 147 17 C147 12 140 20 140 20Z" fill="#E8B4B4" opacity=".8"/>
+                    <!-- Tier 2 (middle) -->
+                    <div class="tier tier-2">
+                        <div class="tier-body">
+                            <div class="tier-pattern"></div>
+                            <div class="tier-dots"><span></span><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="tier-top"></div>
+                        <div class="tier-bottom"></div>
+                        <div class="tier-rose" style="top:-7px;left:8px"></div>
+                        <div class="tier-rose" style="top:-7px;right:8px"></div>
+                    </div>
 
-                        <!-- === CAKE BELOW === -->
-                        <!-- Base plate -->
-                        <ellipse cx="140" cy="365" rx="120" ry="12" fill="#B8943E" opacity=".3"/>
+                    <!-- Tier 1 (bottom, largest) -->
+                    <div class="tier tier-1">
+                        <div class="tier-body">
+                            <div class="tier-pattern"></div>
+                            <div class="tier-dots"><span></span><span></span><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="tier-top"></div>
+                        <div class="tier-bottom"></div>
+                        <div class="tier-rose" style="top:-8px;left:12px"></div>
+                        <div class="tier-rose" style="top:-8px;right:12px"></div>
+                        <div class="tier-rose" style="top:-8px;left:50%;margin-left:-8px"></div>
+                    </div>
 
-                        <!-- Tier 1 (bottom) -->
-                        <rect x="30" y="290" width="220" height="75" rx="10" fill="#FFF8EE" stroke="#C5A059" stroke-width="2.5"/>
-                        <line x1="40" y1="310" x2="240" y2="310" stroke="#D4AF37" stroke-width="1" opacity=".4"/>
-                        <line x1="40" y1="345" x2="240" y2="345" stroke="#D4AF37" stroke-width="1" opacity=".4"/>
-                        <path d="M50 328 Q70 318 90 328 Q110 318 130 328 Q150 318 170 328 Q190 318 210 328 Q230 318 240 328" fill="none" stroke="#D4AF37" stroke-width="1.8" opacity=".5"/>
-                        <!-- Roses on tier 1 -->
-                        <circle cx="45" cy="290" r="8" fill="#E8B4B4"/><circle cx="48" cy="287" r="5" fill="#F0C8C8"/>
-                        <circle cx="235" cy="290" r="8" fill="#E8B4B4"/><circle cx="238" cy="287" r="5" fill="#F0C8C8"/>
-
-                        <!-- Tier 2 (middle) -->
-                        <rect x="60" y="205" width="160" height="85" rx="8" fill="#FFF8EE" stroke="#C5A059" stroke-width="2.5"/>
-                        <line x1="70" y1="225" x2="210" y2="225" stroke="#D4AF37" stroke-width="1" opacity=".4"/>
-                        <line x1="70" y1="265" x2="210" y2="265" stroke="#D4AF37" stroke-width="1" opacity=".4"/>
-                        <path d="M80 245 Q100 236 120 245 Q140 236 160 245 Q180 236 200 245" fill="none" stroke="#D4AF37" stroke-width="1.8" opacity=".5"/>
-                        <!-- Gold dots -->
-                        <circle cx="85" cy="255" r="3" fill="#D4AF37" opacity=".5"/><circle cx="110" cy="255" r="3" fill="#D4AF37" opacity=".5"/><circle cx="135" cy="255" r="3" fill="#D4AF37" opacity=".5"/><circle cx="160" cy="255" r="3" fill="#D4AF37" opacity=".5"/><circle cx="185" cy="255" r="3" fill="#D4AF37" opacity=".5"/>
-                        <!-- Roses on tier 2 -->
-                        <circle cx="72" cy="205" r="7" fill="#E8B4B4"/><circle cx="75" cy="202" r="4" fill="#F0C8C8"/>
-                        <circle cx="208" cy="205" r="7" fill="#E8B4B4"/><circle cx="211" cy="202" r="4" fill="#F0C8C8"/>
-
-                        <!-- Tier 3 (top - couple stands here) -->
-                        <rect x="90" y="120" width="100" height="85" rx="7" fill="#FFF8EE" stroke="#C5A059" stroke-width="2.5"/>
-                        <path d="M105 160 Q120 152 135 160 Q150 152 165 160 Q180 152 185 160" fill="none" stroke="#D4AF37" stroke-width="1.8" opacity=".5"/>
-                        <!-- Gold dots -->
-                        <circle cx="110" cy="175" r="3" fill="#D4AF37" opacity=".5"/><circle cx="130" cy="175" r="3" fill="#D4AF37" opacity=".5"/><circle cx="150" cy="175" r="3" fill="#D4AF37" opacity=".5"/><circle cx="170" cy="175" r="3" fill="#D4AF37" opacity=".5"/>
-                        <!-- Roses on tier 3 -->
-                        <circle cx="98" cy="120" r="6" fill="#E8B4B4"/><circle cx="101" cy="117" r="4" fill="#F0C8C8"/>
-                        <circle cx="182" cy="120" r="6" fill="#E8B4B4"/><circle cx="185" cy="117" r="4" fill="#F0C8C8"/>
-                    </svg>
+                    <!-- Shadow -->
+                    <div class="cake-shadow"></div>
                 </div>
 
-                <!-- Floating hearts around the scene -->
-                <div class="float-heart" style="top:10%;left:5%;animation-delay:0s">♥</div>
-                <div class="float-heart" style="top:50%;right:0;animation-delay:1.5s">♥</div>
-                <div class="float-heart" style="top:25%;right:5%;animation-delay:3s">♥</div>
-                <div class="float-heart" style="bottom:15%;left:0;animation-delay:2s">♥</div>
+                <!-- Floating hearts -->
+                <div class="float-heart" style="top:5%;left:0;animation-delay:0s">♥</div>
+                <div class="float-heart" style="top:45%;right:-15px;animation-delay:1.5s">♥</div>
+                <div class="float-heart" style="top:15%;right:0;animation-delay:3s">♥</div>
+                <div class="float-heart" style="bottom:20%;left:-10px;animation-delay:2s">♥</div>
             </div>
 
             <div class="hero-text">
